@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Convert temperatures between Celsius, Fahrenheit and Kelvin instantly." />
+  <title>Temperature Converter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <main class="stage">
+    <h1 class="page-title">Temperature Converter</h1>
+    <p class="page-sub">Celsius · Fahrenheit · Kelvin</p>
+
+    <section class="app" aria-label="Temperature converter">
+
+      <!-- LEFT: input + input unit (Checklist 1 & 2) -->
+      <div class="panel panel-input">
+        <h2 class="panel-title">Input</h2>
+
+        <label class="field-label" for="tempInput">Temperature value</label>
+        <div class="input-wrap" id="inputWrap">
+          <input
+            type="text"
+            id="tempInput"
+            inputmode="decimal"
+            autocomplete="off"
+            placeholder="e.g. 25"
+            aria-describedby="errorMsg"
+          />
+        </div>
+        <p class="error" id="errorMsg" role="alert" aria-live="polite"></p>
+
+        <fieldset class="unit-group">
+          <legend class="field-label">Convert from</legend>
+
+          <input type="radio" name="unit" id="unitC" value="C" checked />
+          <label for="unitC" class="pill">Celsius <span>°C</span></label>
+
+          <input type="radio" name="unit" id="unitF" value="F" />
+          <label for="unitF" class="pill">Fahrenheit <span>°F</span></label>
+
+          <input type="radio" name="unit" id="unitK" value="K" />
+          <label for="unitK" class="pill">Kelvin <span>K</span></label>
+        </fieldset>
+      </div>
+
+      <!-- MIDDLE: gauge + action buttons (Checklist 4) -->
+      <div class="panel panel-middle">
+        <h2 class="panel-title">Gauge</h2>
+
+        <!-- Dynamic temperature icon: snowflake (cold), thermometer (moderate), flame (hot) -->
+        <div class="temp-badge" id="tempBadge" data-state="idle" role="img"
+             aria-label="Temperature status: waiting for a value">
+          <span class="badge-ring"></span>
+          <span class="badge-core">
+
+            <!-- Snowflake: cold -->
+            <svg class="badge-icon icon-cold" viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <g id="snowArm">
+                  <line x1="32" y1="8" x2="32" y2="56" />
+                  <polyline points="25,15 32,22 39,15" />
+                  <polyline points="25,49 32,42 39,49" />
+                </g>
+              </defs>
+              <g class="snow-spin" fill="none" stroke="currentColor" stroke-width="3.2"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <use href="#snowArm" />
+                <use href="#snowArm" transform="rotate(60 32 32)" />
+                <use href="#snowArm" transform="rotate(120 32 32)" />
+              </g>
+            </svg>
+
+            <!-- Thermometer: moderate (also shown, dimmed, while idle) -->
+            <svg class="badge-icon icon-moderate" viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M26 38V14a6 6 0 0 1 12 0v24a11 11 0 1 1-12 0z"
+                    fill="none" stroke="currentColor" stroke-width="3.2" stroke-linejoin="round" />
+              <path d="M45 18h5M45 26h5M45 34h5" fill="none" stroke="currentColor"
+                    stroke-width="3" stroke-linecap="round" />
+              <rect class="mercury" x="30" y="20" width="4" height="27" rx="2" fill="currentColor" />
+              <circle cx="32" cy="47" r="6" fill="currentColor" />
+            </svg>
+
+            <!-- Flame: hot -->
+            <svg class="badge-icon icon-hot" viewBox="0 0 24 24" aria-hidden="true">
+              <path class="flame-path"
+                    d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"
+                    fill="currentColor" fill-opacity="0.28" stroke="currentColor"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+
+          </span>
+        </div>
+        <p class="badge-label" id="badgeLabel">Waiting for a value</p>
+
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="convertBtn">Convert</button>
+          <button type="button" class="btn btn-ghost" id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: results for all units at once (Checklist 3, 5 & 6) -->
+      <div class="panel panel-results">
+        <h2 class="panel-title">Results</h2>
+
+        <p class="notice" id="notice" role="status" aria-live="polite">
+          Press <strong>Convert</strong> to see all three units.
+        </p>
+
+        <ul class="results" id="results">
+          <li class="result" data-unit="C">
+            <span class="result-label">Celsius</span>
+            <span class="result-value" id="outC">--</span>
+            <button type="button" class="copy" data-copy="outC" aria-label="Copy Celsius value">Copy</button>
+          </li>
+          <li class="result" data-unit="F">
+            <span class="result-label">Fahrenheit</span>
+            <span class="result-value" id="outF">--</span>
+            <button type="button" class="copy" data-copy="outF" aria-label="Copy Fahrenheit value">Copy</button>
+          </li>
+          <li class="result" data-unit="K">
+            <span class="result-label">Kelvin</span>
+            <span class="result-value" id="outK">--</span>
+            <button type="button" class="copy" data-copy="outK" aria-label="Copy Kelvin value">Copy</button>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+    <footer class="foot">Absolute zero: −273.15 °C = −459.67 °F = 0 K</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
